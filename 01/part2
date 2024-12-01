@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+inputFile=${1:-sample.txt}
+
+if [[ ! -f $inputFile ]]; then
+    echo "$inputFile is not a file"
+    exit 1
+fi
+
+left=($(cat $inputFile | awk '{print $1}'))
+right=$(cat $inputFile | awk '{printf "%s\n", $2}')
+
+setLength=${#left[@]}
+
+totalSimilarityScore=0
+for (( i=0; i < setLength; i++));
+do
+    leftValue=${left[i]}
+
+    matches=$(echo "$right" | grep -o "$leftValue" | wc -l)
+    similarityScore=$(( leftValue * matches))
+    totalSimilarityScore=$((totalSimilarityScore + similarityScore))
+done
+
+echo $totalSimilarityScore
